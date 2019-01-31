@@ -1,0 +1,30 @@
+{
+    "name": "alldigitalrewards/incomm-sdk",
+    "type": "library",
+    "description": "InComm Vendor SDK",
+    "autoload": {
+        "psr-4": {
+            "AllDigitalRewards\\Vendor\\InComm\\": "./src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AllDigitalRewards\\Tests\\": "./tests"
+        }
+    },
+    "require": {
+        "ext-json": "*",
+        "psr/log": "^1.0",
+        "jojihere/monolog-fluent": "^1.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=phpcs.xml src",
+        "fix-style": "phpcbf -p --standard=phpcs.xml src"
+    }
+}

@@ -6,12 +6,11 @@ $client->setClientId('alldigitalrewardstest');
 $client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
 $client->setProgramId(5870);
 
-// limited to five cards and one recipient per order
 $orderRequest = [
-    "PurchaseOrderNumber" => "2",
+    "PurchaseOrderNumber" => "7",
     "CatalogId" => 1,
     "Metadata" => "",
-    "CustomerOrderId" => "Customer1-2",
+    "CustomerOrderId" => "Customer1-7",
     "EmailTheme" => "",
     "Recipients" => [
         [
@@ -29,22 +28,25 @@ $orderRequest = [
             "DeliverEmail" => true,
             "Products" => [
                 [
-                    "Sku" => "VUSD-D-V-00",
-                    "Value" => 25,
+                    "Sku" => "VUSD-D-V-01",
+                    "Value" => 10,
                     "Quantity" => 1,
                     "EmbossedTextId" => 0,
-                    "Packaging" => "string",
-                    "ImageCode" => "string",
-                    "MessageText" => "my first order",
+                    "Packaging" => "PCK-1",
+                    "ImageCode" => "",
+                    "MessageText" => "some text",
                     "MessageRecipientName" => "Joe Muto"
                 ]
             ]
         ]
     ]
 ];
-if ($client->createImmediateOrder($orderRequest) === null) {
+
+$response = $client->createOrder($orderRequest);
+if ($response === null) {
     print_r($client->getErrors());
     exit;
 }
 
-print_r($client->createImmediateOrder($orderRequest));
+
+var_dump($response);

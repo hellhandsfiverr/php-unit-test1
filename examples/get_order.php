@@ -7,13 +7,7 @@ $client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
 $client->setProgramId(5870);
 
 //use any of the uri's to retrieve order info
-$uri = 'https://api.giftango.com/orders/QPZ-4Q-GLS';
-$uri = 'https://api.giftango.com/orders/B17-0D-DWZ';
-//$uri = 'https://api.giftango.com/orders/9T8-CP-2B0';
-//$uri = 'https://api.giftango.com/orders/S2S-R8-6CJ';
-//$uri = 'https://api.giftango.com/orders/G2N-D6-QRC';
-//$uri = 'https://api.giftango.com/orders/4HF-CV-ZXP';
-//$uri = 'https://api.giftango.com/orders/QX4-0J-JSX';
+$uri = 'https://api.giftango.com/orders/0G6-W6-WGK';
 
 $order = $client->getOrder($uri);
 if($order === null) {

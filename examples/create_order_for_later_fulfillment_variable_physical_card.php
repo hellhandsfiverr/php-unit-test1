@@ -34,7 +34,6 @@ $orderRequest = [
                     "Quantity" => 1,
                     "EmbossedTextId" => 0,
                     "Packaging" => "PCK-1",
-                    "ImageCode" => "",
                     "MessageText" => "my physical order",
                     "MessageRecipientName" => "Joe Muto"
                 ]

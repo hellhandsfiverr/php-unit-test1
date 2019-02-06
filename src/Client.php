@@ -5,6 +5,7 @@ namespace AllDigitalRewards\Vendor\InComm;
 use AllDigitalRewards\Vendor\InComm\Entities\AuthTokenRequest;
 use AllDigitalRewards\Vendor\InComm\Entities\OrderCard;
 use AllDigitalRewards\Vendor\InComm\Entities\OrderResponse;
+use AllDigitalRewards\Vendor\InComm\Entities\OrderStatus;
 use AllDigitalRewards\Vendor\InComm\Entities\PackagingOption;
 use AllDigitalRewards\Vendor\InComm\Entities\Product;
 use AllDigitalRewards\Vendor\InComm\Entities\Catalog;
@@ -317,7 +318,7 @@ class Client
         return null;
     }
 
-    public function getOrderCardsList(string $uri)
+    public function getOrderCards(string $uri)
     {
         try {
             $uri = $uri . '/cards';
@@ -335,6 +336,37 @@ class Client
                 $collection = [];
                 foreach ($orderCards as $orderCard) {
                     $collection[] = new OrderCard($orderCard);
+                }
+                return $collection;
+            }
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
+    public function getAllOrderFulfillmentStatuses()
+    {
+        try {
+            $url = $this->getApiUrl() . '/fulfillment';
+
+            $response = $this->getHttpClient()->get($url, [
+                'debug' => false,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
+                    'ProgramId' => $this->getProgramId(),
+                ],
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $statuses = json_decode($response->getBody(), true);
+                $collection = [];
+                foreach ($statuses as $status) {
+                    $collection[] = new OrderStatus($status);
                 }
                 return $collection;
             }
@@ -530,6 +562,19 @@ class Client
     {
         $response = $e->getResponse()->getBody()->getContents();
         $errors = json_decode($response, true);
-        $this->errors[] = is_string($errors) === true ? $errors : $errors[key($errors)];
+        if (is_string($errors) === true) {
+            $this->errors[] = $errors;
+            return;
+        }
+
+        foreach ($errors as $error) {
+            if (is_array($error) === true) {
+                foreach ($error as $embedded) {
+                    $this->errors[] = $embedded;
+                }
+                continue;
+            }
+            $this->errors[] = $error;
+        }
     }
 }

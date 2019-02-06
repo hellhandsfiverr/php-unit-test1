@@ -15,7 +15,7 @@ $orderRequest = [
     "EmailTheme" => "",
     "Recipients" => [
         [
-            "ShippingMethod" => "email",
+            "ShippingMethod" => "Email",
             "LanguageCultureCode" => "en-US",
             "FirstName" => "Joseph",
             "LastName" => "Muto",
@@ -32,9 +32,6 @@ $orderRequest = [
                     "Sku" => "VUSD-D-V-00",
                     "Value" => 25,
                     "Quantity" => 1,
-                    "EmbossedTextId" => 0,
-                    "Packaging" => "string",
-                    "ImageCode" => "string",
                     "MessageText" => "my multi order",
                     "MessageRecipientName" => "Joe Muto"
                 ],
@@ -42,9 +39,6 @@ $orderRequest = [
                     "Sku" => "VUSD-D-V-00",
                     "Value" => 25,
                     "Quantity" => 1,
-                    "EmbossedTextId" => 0,
-                    "Packaging" => "string",
-                    "ImageCode" => "string",
                     "MessageText" => "my multi order",
                     "MessageRecipientName" => "Joe Muto"
                 ]

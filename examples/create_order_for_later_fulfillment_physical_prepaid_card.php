@@ -32,9 +32,7 @@ $orderRequest = [
                     "Sku" => "VUSD-P-V-01",
                     "Value" => 50,
                     "Quantity" => 1,
-                    "EmbossedTextId" => 0,
                     "Packaging" => "PCK-2",
-                    "ImageCode" => "",
                     "MessageText" => "my physical order",
                     "MessageRecipientName" => "Joe Muto"
                 ]

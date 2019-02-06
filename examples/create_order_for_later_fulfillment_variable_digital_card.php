@@ -15,7 +15,7 @@ $orderRequest = [
     "EmailTheme" => "",
     "Recipients" => [
         [
-            "ShippingMethod" => "email",
+            "ShippingMethod" => "Email",
             "LanguageCultureCode" => "en-US",
             "FirstName" => "Joseph",
             "LastName" => "Muto",
@@ -33,8 +33,6 @@ $orderRequest = [
                     "Value" => 25,
                     "Quantity" => 1,
                     "EmbossedTextId" => 0,
-                    "Packaging" => "string",
-                    "ImageCode" => "string",
                     "MessageText" => "my first order",
                     "MessageRecipientName" => "Joe Muto"
                 ]

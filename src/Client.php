@@ -3,6 +3,7 @@
 namespace AllDigitalRewards\Vendor\InComm;
 
 use AllDigitalRewards\Vendor\InComm\Entities\AuthTokenRequest;
+use AllDigitalRewards\Vendor\InComm\Entities\OrderCard;
 use AllDigitalRewards\Vendor\InComm\Entities\OrderResponse;
 use AllDigitalRewards\Vendor\InComm\Entities\PackagingOption;
 use AllDigitalRewards\Vendor\InComm\Entities\Product;
@@ -331,7 +332,11 @@ class Client
 
             if ($response->getStatusCode() === 200) {
                 $orderCards = json_decode($response->getBody(), true);
-                var_dump($orderCards);die;
+                $collection = [];
+                foreach ($orderCards as $orderCard) {
+                    $collection[] = new OrderCard($orderCard);
+                }
+                return $collection;
             }
         } catch (RequestException $exception) {
             $this->setRequestExceptionError($exception);

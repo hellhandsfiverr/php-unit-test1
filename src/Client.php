@@ -3,6 +3,8 @@
 namespace AllDigitalRewards\Vendor\InComm;
 
 use AllDigitalRewards\Vendor\InComm\Entities\AuthTokenRequest;
+use AllDigitalRewards\Vendor\InComm\Entities\OrderResponse;
+use AllDigitalRewards\Vendor\InComm\Entities\PackagingOption;
 use AllDigitalRewards\Vendor\InComm\Entities\Product;
 use AllDigitalRewards\Vendor\InComm\Entities\Catalog;
 use GuzzleHttp\Exception\RequestException;
@@ -12,9 +14,9 @@ class Client
     /**
      * @var string
      */
-    private $tokenUrl = 'https://api.giftango.com';
+    private $apiUrl = 'https://api.giftango.com';
 
-    private $apiUrl = 'https://app.giftango.com';
+    private $appUrl = 'https://app.giftango.com';
 
     /**
      * @var string
@@ -61,22 +63,6 @@ class Client
     /**
      * @return string
      */
-    public function getTokenUrl(): string
-    {
-        return $this->tokenUrl;
-    }
-
-    /**
-     * @param string $tokenUrl
-     */
-    public function setTokenUrl(string $tokenUrl): void
-    {
-        $this->tokenUrl = $tokenUrl;
-    }
-
-    /**
-     * @return string
-     */
     public function getApiUrl(): string
     {
         return $this->apiUrl;
@@ -88,6 +74,22 @@ class Client
     public function setApiUrl(string $apiUrl): void
     {
         $this->apiUrl = $apiUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppUrl(): string
+    {
+        return $this->appUrl;
+    }
+
+    /**
+     * @param string $appUrl
+     */
+    public function setAppUrl(string $appUrl): void
+    {
+        $this->appUrl = $appUrl;
     }
 
     /**
@@ -170,7 +172,7 @@ class Client
      */
     private function generateAuthToken(): bool
     {
-        $url = $this->getTokenUrl() . '/auth/token';
+        $url = $this->getApiUrl() . '/auth/token';
         $response = $this->getHttpClient()->post($url, [
             'debug' => false,
             'form_params' => $this->getAuthTokenRequest()->toArray(),
@@ -212,14 +214,158 @@ class Client
             $products = $this->getProductsByCatalogCollection($catalogs);
             return $products;
         } catch (RequestException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
-            $errors = json_decode($response, true);
-            $msg = $errors['message'] ?? null;
-            if($msg === null) {
-                $msg = $errors['error'] ?? null;
+            $this->setRequestExceptionError($e);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array|null
+     * @throws \Exception
+     */
+    public function getPackagingOptions()
+    {
+        try {
+            $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/packaging';
+
+            $response = $this->getHttpClient()->get($url, [
+                'debug' => false,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->getAuthToken()
+                ]
+            ]);
+
+            $response = $response->getBody()->getContents();
+            $decodedResponse = json_decode($response, true);
+
+            if (is_array($decodedResponse) === false) {
+                throw new \Exception('Unable to decode API packaging endpoint');
             }
 
-            $this->errors[] = $msg;
+            $packagingCollection = [];
+            foreach ($decodedResponse as $option) {
+                $packagingCollection[] = new PackagingOption($option);
+            }
+
+            return $packagingCollection;
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $body
+     * @return null
+     */
+    public function createOrder(array $body)
+    {
+        try {
+            $url = $this->getApiUrl() . '/orders';
+
+            $response = $this->getHttpClient()->post($url, [
+                'debug' => false,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
+                    'ProgramId' => $this->getProgramId(),
+                ],
+                'body' => json_encode($body)
+            ]);
+
+            if ($response->getStatusCode() === 202) {
+                return $response->getHeader('Location')[0];
+            }
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
+    public function getOrder(string $uri)
+    {
+        try {
+            $response = $this->getHttpClient()->get($uri, [
+                'debug' => false,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
+                    'ProgramId' => $this->getProgramId(),
+                ],
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $order = json_decode($response->getBody(), true);
+                return new OrderResponse($order);
+            }
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
+    public function getOrderCardsList(string $uri)
+    {
+        try {
+            $uri = $uri . '/cards';
+            $response = $this->getHttpClient()->get($uri, [
+                'debug' => false,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
+                    'ProgramId' => $this->getProgramId(),
+                ],
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $orderCards = json_decode($response->getBody(), true);
+                var_dump($orderCards);die;
+            }
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $body
+     * @return bool|null
+     */
+    public function createImmediateOrder(array $body)
+    {
+        try {
+            $url = $this->getApiUrl() . '/orders/Immediate';
+
+            $response = $this->getHttpClient()->post($url, [
+                'debug' => false,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
+                    'ProgramId' => $this->getProgramId(),
+                ],
+                'body' => json_encode($body)
+            ]);
+
+            if ($response->getStatusCode() === 201) {
+                return true;
+            }
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
         } catch (\Exception $e) {
             $this->errors[] = $e->getMessage();
         }
@@ -250,7 +396,7 @@ class Client
      */
     private function hydrateCatalogProducts(int $catalogId)
     {
-        $url = $this->getApiUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs/' . $catalogId;
+        $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs/' . $catalogId;
         $response = $this->getHttpClient()->get($url, [
             'debug' => false,
             'headers' => [
@@ -278,7 +424,7 @@ class Client
      */
     private function getCatalogAssets(int $catalogId)
     {
-        $url = $this->getApiUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs/' . $catalogId . '/assets';
+        $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs/' . $catalogId . '/assets';
         $response = $this->getHttpClient()->get($url, [
             'debug' => false,
             'headers' => [
@@ -304,7 +450,6 @@ class Client
     }
 
     /**
-     * @param $catalogId
      * @param $assets
      * @throws \Exception
      */
@@ -347,7 +492,7 @@ class Client
      */
     private function getCatalogs()
     {
-        $url = $this->getApiUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs';
+        $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs';
         $response = $this->getHttpClient()->get($url, [
             'debug' => false,
             'headers' => [
@@ -371,5 +516,15 @@ class Client
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * @param RequestException $e
+     */
+    private function setRequestExceptionError(RequestException $e)
+    {
+        $response = $e->getResponse()->getBody()->getContents();
+        $errors = json_decode($response, true);
+        $this->errors[] = is_string($errors) === true ? $errors : $errors[key($errors)];
     }
 }

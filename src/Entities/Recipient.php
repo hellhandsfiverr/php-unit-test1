@@ -2,56 +2,60 @@
 
 namespace AllDigitalRewards\Vendor\InComm\Entities;
 
-class OrderShipping extends AbstractEntity
+class Recipient extends AbstractEntity
 {
     /**
      * @var string
      */
-    private $ShippingMethod;
+    protected $ShippingMethod = 'Email';
     /**
      * @var string
      */
-    private $LanguageCultureCode;
+    protected $LanguageCultureCode = 'en-US';
     /**
      * @var string
      */
-    private $FirstName;
+    protected $FirstName;
     /**
      * @var string
      */
-    private $LastName;
+    protected $LastName;
     /**
      * @var string
      */
-    private $EmailAddress;
+    protected $EmailAddress;
     /**
      * @var string
      */
-    private $Address1;
+    protected $Address1;
     /**
      * @var string
      */
-    private $Address2;
+    protected $Address2;
     /**
      * @var string
      */
-    private $City;
+    protected $City;
     /**
      * @var string
      */
-    private $StateProvinceCode;
+    protected $StateProvinceCode;
     /**
      * @var string
      */
-    private $PostalCode;
+    protected $PostalCode;
     /**
      * @var string
      */
-    private $CountryCode;
+    protected $CountryCode;
     /**
      * @var bool
      */
-    private $DeliverEmail;
+    protected $DeliverEmail = false;
+    /**
+     * @var OrderProduct[]
+     */
+    protected $Products;
 
     /**
      * @return string
@@ -226,6 +230,10 @@ class OrderShipping extends AbstractEntity
      */
     public function setCountryCode(string $CountryCode)
     {
+        if (in_array($CountryCode, [840, 'us', 'US']) === true) {
+            $this->CountryCode = 'US';
+            return;
+        }
         $this->CountryCode = $CountryCode;
     }
 
@@ -243,5 +251,35 @@ class OrderShipping extends AbstractEntity
     public function setDeliverEmail(bool $DeliverEmail)
     {
         $this->DeliverEmail = $DeliverEmail;
+    }
+
+    /**
+     * @return OrderProduct[]
+     */
+    public function getProducts(): array
+    {
+        return $this->Products;
+    }
+
+    /**
+     * @param OrderProduct[] $Products
+     */
+    public function setProducts(array $Products)
+    {
+        $this->Products = $Products;
+    }
+
+    public function toArray(): array
+    {
+        $data = parent::toArray();
+        if ($data['Products']) {
+            $products = [];
+            foreach ($data['Products'] as $product) {
+                $products[] = $product->toArray();
+            }
+            $data['Products'] = $products;
+        }
+
+        return $data;
     }
 }

@@ -4,6 +4,7 @@ namespace AllDigitalRewards\Vendor\InComm;
 
 use AllDigitalRewards\Vendor\InComm\Entities\AuthTokenRequest;
 use AllDigitalRewards\Vendor\InComm\Entities\OrderCard;
+use AllDigitalRewards\Vendor\InComm\Entities\OrderRequest;
 use AllDigitalRewards\Vendor\InComm\Entities\OrderResponse;
 use AllDigitalRewards\Vendor\InComm\Entities\OrderStatus;
 use AllDigitalRewards\Vendor\InComm\Entities\PackagingOption;
@@ -293,10 +294,10 @@ class Client
     }
 
     /**
-     * @param array $body
+     * @param OrderRequest $orderRequest
      * @return null
      */
-    public function createOrder(array $body)
+    public function createOrder(OrderRequest $orderRequest)
     {
         try {
             $url = $this->getApiUrl() . '/orders';
@@ -308,7 +309,7 @@ class Client
                     'Authorization' => 'Bearer ' . $this->getAuthToken(),
                     'ProgramId' => $this->getProgramId(),
                 ],
-                'body' => json_encode($body)
+                'body' => json_encode($orderRequest->toArray())
             ]);
 
             if ($response->getStatusCode() === 202) {
@@ -323,6 +324,10 @@ class Client
         return null;
     }
 
+    /**
+     * @param string $uri
+     * @return OrderResponse|null
+     */
     public function getOrder(string $uri)
     {
         try {
@@ -348,6 +353,10 @@ class Client
         return null;
     }
 
+    /**
+     * @param string $uri
+     * @return array|null
+     */
     public function getOrderCards(string $uri)
     {
         try {
@@ -378,6 +387,9 @@ class Client
         return null;
     }
 
+    /**
+     * @return array|null
+     */
     public function getAllOrderFulfillmentStatuses()
     {
         try {
@@ -410,10 +422,10 @@ class Client
     }
 
     /**
-     * @param array $body
+     * @param OrderRequest $orderRequest
      * @return bool|null
      */
-    public function createImmediateOrder(array $body)
+    public function createImmediateOrder(OrderRequest $orderRequest)
     {
         try {
             $url = $this->getApiUrl() . '/orders/Immediate';
@@ -425,11 +437,11 @@ class Client
                     'Authorization' => 'Bearer ' . $this->getAuthToken(),
                     'ProgramId' => $this->getProgramId(),
                 ],
-                'body' => json_encode($body)
+                'body' => json_encode($orderRequest->toArray())
             ]);
 
-            if ($response->getStatusCode() === 201) {
-                return true;
+            if ($response->getStatusCode() === 202) {
+                return $response->getHeader('Location')[0];
             }
         } catch (RequestException $exception) {
             $this->setRequestExceptionError($exception);
@@ -592,19 +604,16 @@ class Client
     {
         $response = $e->getResponse()->getBody()->getContents();
         $errors = json_decode($response, true);
-        if (is_string($errors) === true || is_null($errors) === true) {
-            $this->errors[] = $errors;
+        $this->buildErrorsArray($errors);
+    }
+
+    private function buildErrorsArray($arr) {
+        if(!is_array($arr)) {
+            $this->errors[] = $arr;
             return;
         }
-
-        foreach ($errors as $error) {
-            if (is_array($error) === true) {
-                foreach ($error as $embedded) {
-                    $this->errors[] = $embedded;
-                }
-                continue;
-            }
-            $this->errors[] = $error;
+        foreach($arr as $k => $v) {
+            $this->buildErrorsArray($v);
         }
     }
 }

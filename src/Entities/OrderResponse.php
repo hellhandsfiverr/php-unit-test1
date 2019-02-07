@@ -290,7 +290,7 @@ class OrderResponse extends AbstractEntity
         foreach ($Recipients as $key => $recipient) {
             $products = $recipient['Products'];
             unset($recipient['Products']);
-            $this->Recipients[] = new OrderShipping($recipient);
+            $this->Recipients[] = new Recipient($recipient);
             foreach ($products as $product) {
                 $this->Recipients['Products'][] = new OrderProduct($product);
             }

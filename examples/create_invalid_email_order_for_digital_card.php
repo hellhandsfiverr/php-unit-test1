@@ -6,39 +6,35 @@ $client->setClientId('alldigitalrewardstest');
 $client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
 $client->setProgramId(5870);
 
-$orderRequest = [
-    "PurchaseOrderNumber" => "10",
-    "CatalogId" => 1,
-    "Metadata" => "",
-    "CustomerOrderId" => "Customer1-10",
-    "EmailTheme" => "",
-    "Recipients" => [
-        [
-            "ShippingMethod" => "Email",
-            "LanguageCultureCode" => "en-US",
-            "FirstName" => "Joseph",
-            "LastName" => "Muto",
-            "EmailAddress" => "‘@@incomm’",
-            "Address1" => "935 Bungalow Ave",
-            "Address2" => "",
-            "City" => "Winter Park",
-            "StateProvinceCode" => "FL",
-            "PostalCode" => "32789",
-            "CountryCode" => "US",
-            "DeliverEmail" => true,
-            "Products" => [
-                [
-                    "Sku" => "VUSD-D-V-00",
-                    "Value" => 25,
-                    "Quantity" => 1,
-                    "EmbossedTextId" => 0,
-                    "MessageText" => "my first order",
-                    "MessageRecipientName" => "Joe Muto"
-                ]
-            ]
-        ]
+$orderProduct = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
+    [
+        "Sku" => "VUSD-D-V-00",
+        "Value" => 25,
+        "Quantity" => 1,
     ]
-];
+);
+
+$recipient = new \AllDigitalRewards\Vendor\InComm\Entities\Recipient(
+    [
+        "FirstName" => "Joseph",
+        "LastName" => "Muto",
+        "EmailAddress" => "‘@@incomm’",
+        "Address1" => "935 Bungalow Ave",
+        "Address2" => "",
+        "City" => "Winter Park",
+        "StateProvinceCode" => "FL",
+        "PostalCode" => "32789",
+        "CountryCode" => "US",
+    ]
+);
+$recipient->setProducts([$orderProduct]);
+$orderRequest = new \AllDigitalRewards\Vendor\InComm\Entities\OrderRequest(
+    [
+        "CatalogId" => 1,
+        "CustomerOrderId" => "Customer1-10",
+    ]
+);
+$orderRequest->setRecipients([$recipient]);
 
 $response = $client->createOrder($orderRequest);
 if ($response === null) {
@@ -49,11 +45,8 @@ if ($response === null) {
 /*
 Array
 (
-    [0] => Array
-        (
-            [0] => EmailAddress is not valid
-        )
-
+    [0] => EmailAddress is not valid
 )
+
  */
 var_dump($response);

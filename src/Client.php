@@ -503,7 +503,13 @@ class Client
      */
     private function getCatalogAssets(int $catalogId)
     {
-        $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs/' . $catalogId . '/assets';
+        $url = $this->getAppUrl()
+            . '/programs/programs/'
+            . $this->getProgramId()
+            . '/catalogs/'
+            . $catalogId
+            . '/assets';
+
         $response = $this->getHttpClient()->get($url, [
             'debug' => false,
             'headers' => [
@@ -525,7 +531,6 @@ class Client
         }
 
         $this->hydrateCatalogAssets($productAssets);
-
     }
 
     /**
@@ -607,12 +612,13 @@ class Client
         $this->buildErrorsArray($errors);
     }
 
-    private function buildErrorsArray($arr) {
-        if(!is_array($arr)) {
+    private function buildErrorsArray($arr)
+    {
+        if (!is_array($arr)) {
             $this->errors[] = $arr;
             return;
         }
-        foreach($arr as $k => $v) {
+        foreach ($arr as $k => $v) {
             $this->buildErrorsArray($v);
         }
     }

@@ -9,6 +9,7 @@ use AllDigitalRewards\Vendor\InComm\Entities\OrderStatus;
 use AllDigitalRewards\Vendor\InComm\Entities\PackagingOption;
 use AllDigitalRewards\Vendor\InComm\Entities\Product;
 use AllDigitalRewards\Vendor\InComm\Entities\Catalog;
+use AllDigitalRewards\Vendor\InComm\Entities\Program;
 use GuzzleHttp\Exception\RequestException;
 
 class Client
@@ -209,7 +210,7 @@ class Client
     public function getPrograms()
     {
         try {
-            $url = $this->getApiUrl() . '/programs/programs';
+            $url = $this->getAppUrl() . '/programs/programs';
 
             $response = $this->getHttpClient()->get($url, [
                 'debug' => false,
@@ -219,6 +220,12 @@ class Client
                 ],
             ]);
             if ($response->getStatusCode() === 200) {
+                $programs = json_decode($response->getBody(), true);
+                $collection = [];
+                foreach ($programs as $program) {
+                    $collection[] = new Program($program);
+                }
+                return $collection;
             }
         } catch (RequestException $exception) {
             $this->setRequestExceptionError($exception);
@@ -584,6 +591,7 @@ class Client
     private function setRequestExceptionError(RequestException $e)
     {
         $response = $e->getResponse()->getBody()->getContents();
+        var_dump($e->getResponse()->getStatusCode());die;
         $errors = json_decode($response, true);
         if (is_string($errors) === true || is_null($errors) === true) {
             $this->errors[] = $errors;

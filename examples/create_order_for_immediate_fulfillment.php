@@ -15,7 +15,7 @@ $orderRequest = [
     "EmailTheme" => "",
     "Recipients" => [
         [
-            "ShippingMethod" => "email",
+            "ShippingMethod" => "Email",
             "LanguageCultureCode" => "en-US",
             "FirstName" => "Joseph",
             "LastName" => "Muto",

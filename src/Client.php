@@ -206,6 +206,29 @@ class Client
         return $this->authToken;
     }
 
+    public function getPrograms()
+    {
+        try {
+            $url = $this->getApiUrl() . '/programs/programs';
+
+            $response = $this->getHttpClient()->get($url, [
+                'debug' => false,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
+                ],
+            ]);
+            if ($response->getStatusCode() === 200) {
+            }
+        } catch (RequestException $exception) {
+            $this->setRequestExceptionError($exception);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        return null;
+    }
+
     /**
      * @return Product[]|null
      */
@@ -562,7 +585,7 @@ class Client
     {
         $response = $e->getResponse()->getBody()->getContents();
         $errors = json_decode($response, true);
-        if (is_string($errors) === true) {
+        if (is_string($errors) === true || is_null($errors) === true) {
             $this->errors[] = $errors;
             return;
         }

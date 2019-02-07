@@ -591,7 +591,6 @@ class Client
     private function setRequestExceptionError(RequestException $e)
     {
         $response = $e->getResponse()->getBody()->getContents();
-        var_dump($e->getResponse()->getStatusCode());die;
         $errors = json_decode($response, true);
         if (is_string($errors) === true || is_null($errors) === true) {
             $this->errors[] = $errors;

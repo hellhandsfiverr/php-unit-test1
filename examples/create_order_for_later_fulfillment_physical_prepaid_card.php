@@ -6,7 +6,6 @@ $client->setClientId('alldigitalrewardstest');
 $client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
 $client->setProgramId(5870);
 
-//Submit a standard order for a variable physical card
 $orderRequest = [
     "PurchaseOrderNumber" => "6",
     "CatalogId" => 1,

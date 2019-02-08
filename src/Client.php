@@ -297,7 +297,7 @@ class Client
      * @param OrderRequest $orderRequest
      * @return null
      */
-    public function createOrder(OrderRequest $orderRequest)
+    public function createOrderLaterFulfillment(OrderRequest $orderRequest)
     {
         try {
             $url = $this->getApiUrl() . '/orders';

@@ -36,7 +36,7 @@ $orderRequest = new \AllDigitalRewards\Vendor\InComm\Entities\OrderRequest(
 );
 $orderRequest->setRecipients([$recipient]);
 
-$response = $client->createOrder($orderRequest);
+$response = $client->createOrderLaterFulfillment($orderRequest);
 if ($response === null) {
     print_r($client->getErrors());
     exit;

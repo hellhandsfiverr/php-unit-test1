@@ -22,7 +22,7 @@ class Product extends AbstractEntity
     /**
      * @var bool
      */
-    protected $isDigial;
+    protected $isDigital;
 
     /**
      * @var int
@@ -115,17 +115,17 @@ class Product extends AbstractEntity
     /**
      * @return bool
      */
-    public function isDigial(): bool
+    public function isDigital(): bool
     {
-        return $this->isDigial;
+        return $this->isDigital;
     }
 
     /**
-     * @param bool $isDigial
+     * @param bool $isDigital
      */
-    public function setIsDigial(bool $isDigial)
+    public function setIsDigital(bool $isDigital)
     {
-        $this->isDigial = $isDigial;
+        $this->isDigital = $isDigital;
     }
 
     /**

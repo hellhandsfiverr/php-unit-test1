@@ -20,7 +20,7 @@ class Product extends AbstractEntity
     protected $productSku;
 
     /**
-     * @var int
+     * @var bool
      */
     protected $isDigial;
 
@@ -113,17 +113,17 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getisDigial(): int
+    public function isDigial(): bool
     {
         return $this->isDigial;
     }
 
     /**
-     * @param int $isDigial
+     * @param bool $isDigial
      */
-    public function setIsDigial(int $isDigial): void
+    public function setIsDigial(bool $isDigial)
     {
         $this->isDigial = $isDigial;
     }

@@ -297,7 +297,7 @@ class Client
      * @param OrderRequest $orderRequest
      * @return null
      */
-    public function createOrder(OrderRequest $orderRequest)
+    public function createOrderLaterFulfillment(OrderRequest $orderRequest)
     {
         try {
             $url = $this->getApiUrl() . '/orders';
@@ -423,7 +423,7 @@ class Client
 
     /**
      * @param OrderRequest $orderRequest
-     * @return bool|null
+     * @return OrderResponse|null
      */
     public function createImmediateOrder(OrderRequest $orderRequest)
     {
@@ -440,8 +440,9 @@ class Client
                 'body' => json_encode($orderRequest->toArray())
             ]);
 
-            if ($response->getStatusCode() === 202) {
-                return $response->getHeader('Location')[0];
+            if ($response->getStatusCode() === 201) {
+                $order = json_decode($response->getBody(), true);
+                return new OrderResponse($order);
             }
         } catch (RequestException $exception) {
             $this->setRequestExceptionError($exception);

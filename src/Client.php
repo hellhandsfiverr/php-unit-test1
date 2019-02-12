@@ -495,7 +495,9 @@ class Client
 
         foreach ($decodedResponse['products'] as $product) {
             $sku = $product['productSku'];
-            $this->productCollection[$sku] = new Product($product);
+            $createProd = new Product($product);
+            $createProd->setCatalogId($catalogId);
+            $this->productCollection[$sku] = $createProd;
         }
     }
 

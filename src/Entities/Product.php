@@ -8,6 +8,10 @@ class Product extends AbstractEntity
      * @var string
      */
     protected $productName;
+    /**
+     * @var int
+     */
+    protected $catalogId;
 
     /**
      * @var string
@@ -78,6 +82,22 @@ class Product extends AbstractEntity
     public function setProductName(string $productName): void
     {
         $this->productName = $productName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCatalogId(): int
+    {
+        return $this->catalogId;
+    }
+
+    /**
+     * @param int $catalogId
+     */
+    public function setCatalogId(int $catalogId)
+    {
+        $this->catalogId = $catalogId;
     }
 
     /**

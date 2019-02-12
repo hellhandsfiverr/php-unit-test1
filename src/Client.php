@@ -354,13 +354,13 @@ class Client
     }
 
     /**
-     * @param string $uri
-     * @return array|null
+     * @param string $orderUri
+     * @return OrderCard[]|null
      */
-    public function getOrderCards(string $uri)
+    public function getOrderCards(string $orderUri): array
     {
         try {
-            $uri = $uri . '/cards';
+            $uri = $this->getApiUrl(). '/orders/' . $orderUri . '/cards';
             $response = $this->getHttpClient()->get($uri, [
                 'debug' => false,
                 'headers' => [

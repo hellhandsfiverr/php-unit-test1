@@ -7,59 +7,59 @@ class OrderResponse extends AbstractEntity
     /**
      * @var string
      */
-    private $OrderUri;
+    protected $OrderUri;
     /**
      * @var string
      */
-    private $CreatedOn;
+    protected $CreatedOn;
     /**
      * @var string
      */
-    private $OrderStatus;
+    protected $OrderStatus;
     /**
      * @var string
      */
-    private $Message;
+    protected $Message;
     /**
      * @var string
      */
-    private $PurchaseOrderNumber;
+    protected $PurchaseOrderNumber;
     /**
      * @var int
      */
-    private $ProgramId;
+    protected $ProgramId;
     /**
      * @var int
      */
-    private $CatalogId;
+    protected $CatalogId;
     /**
      * @var float
      */
-    private $TotalFaceValue;
+    protected $TotalFaceValue;
     /**
      * @var float
      */
-    private $TotalFees;
+    protected $TotalFees;
     /**
      * @var float
      */
-    private $TotalDiscounts;
+    protected $TotalDiscounts;
     /**
      * @var float
      */
-    private $TotalCustomerCost;
+    protected $TotalCustomerCost;
     /**
      * @var string
      */
-    private $CustomerOrderId;
+    protected $CustomerOrderId;
     /**
      * @var string
      */
-    private $EmailTheme;
+    protected $EmailTheme;
     /**
      * @var array
      */
-    private $Recipients;
+    protected $Recipients;
 
     /**
      * @return string

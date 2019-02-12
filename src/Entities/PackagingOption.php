@@ -8,7 +8,6 @@ class PackagingOption extends AbstractEntity
      * @var string
      */
     protected $id;
-
     /**
      * @var string
      */

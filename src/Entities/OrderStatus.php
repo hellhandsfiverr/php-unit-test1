@@ -7,35 +7,35 @@ class OrderStatus extends AbstractEntity
     /**
      * @var string
      */
-    private $FulfillmentStatus;
+    protected $FulfillmentStatus;
     /**
      * @var string
      */
-    private $OrderUri;
+    protected $OrderUri;
     /**
      * @var string
      */
-    private $CustomerOrderId;
+    protected $CustomerOrderId;
     /**
      * @var string
      */
-    private $OrderDate;
+    protected $OrderDate;
     /**
      * @var string
      */
-    private $FulfilledDate;
+    protected $FulfilledDate;
     /**
      * @var string
      */
-    private $Sku;
+    protected $Sku;
     /**
      * @var float
      */
-    private $Value;
+    protected $Value;
     /**
      * @var int
      */
-    private $Quantity;
+    protected $Quantity;
 
     /**
      * @return string

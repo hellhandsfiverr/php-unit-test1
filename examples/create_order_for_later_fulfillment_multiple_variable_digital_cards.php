@@ -6,9 +6,16 @@ $client->setClientId('alldigitalrewardstest');
 $client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
 $client->setProgramId(5870);
 
-$orderProduct = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
+$orderProduct1 = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
     [
         "Sku" => "VUSD-D-V-00",
+        "Value" => 20,
+        "Quantity" => 1,
+    ]
+);
+$orderProduct2 = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
+    [
+        "Sku" => "VUSA-D-2500-00",
         "Value" => 25,
         "Quantity" => 1,
     ]
@@ -27,11 +34,11 @@ $recipient = new \AllDigitalRewards\Vendor\InComm\Entities\Recipient(
         "CountryCode" => "US",
     ]
 );
-$recipient->setProducts([$orderProduct]);
+$recipient->setProducts([$orderProduct1, $orderProduct2]);
 $orderRequest = new \AllDigitalRewards\Vendor\InComm\Entities\OrderRequest(
     [
         "CatalogId" => 1,
-        "CustomerOrderId" => "Customer1-4",
+        "CustomerOrderId" => "Customer2-2",
     ]
 );
 $orderRequest->setRecipients([$recipient]);

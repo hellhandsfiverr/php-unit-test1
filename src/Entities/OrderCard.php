@@ -7,47 +7,47 @@ class OrderCard extends AbstractEntity
     /**
      * @var string
      */
-    private $CertificateLink;
+    protected $CertificateLink;
     /**
      * @var string
      */
-    private $CardNumber;
+    protected $CardNumber;
     /**
      * @var string
      */
-    private $Pin;
+    protected $Pin;
     /**
      * @var string
      */
-    private $BarcodeImageUrl;
+    protected $BarcodeImageUrl;
     /**
      * @var string
      */
-    private $CardUri;
+    protected $CardUri;
     /**
      * @var string
      */
-    private $Sku;
+    protected $Sku;
     /**
      * @var float
      */
-    private $InitialBalance;
+    protected $InitialBalance;
     /**
      * @var string
      */
-    private $CreatedOn;
+    protected $CreatedOn;
     /**
      * @var string
      */
-    private $ImageUrl;
+    protected $ImageUrl;
     /**
      * @var string
      */
-    private $TermsAndConditions;
+    protected $TermsAndConditions;
     /**
      * @var string
      */
-    private $UsageInstructions;
+    protected $UsageInstructions;
 
     /**
      * @return string

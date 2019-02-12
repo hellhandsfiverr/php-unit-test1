@@ -8,8 +8,8 @@ $client->setProgramId(5870);
 
 $orderProduct = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
     [
-        "Sku" => "VUSA-P-V-00",
-        "Value" => 34,
+        "Sku" => "VUSA-D-V-00",
+        "Value" => 34.99,
         "Quantity" => 1,
     ]
 );
@@ -31,7 +31,7 @@ $recipient->setProducts([$orderProduct]);
 $orderRequest = new \AllDigitalRewards\Vendor\InComm\Entities\OrderRequest(
     [
         "CatalogId" => 1,
-        "CustomerOrderId" => "Customer1-3",
+        "CustomerOrderId" => "Customer2-1",
     ]
 );
 $orderRequest->setRecipients([$recipient]);

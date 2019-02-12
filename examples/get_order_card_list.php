@@ -21,3 +21,5 @@ if($orderCards === null) {
     print_r($client->getErrors());
     exit;
 }
+
+print_r($orderCards);

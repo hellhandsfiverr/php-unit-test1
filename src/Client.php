@@ -208,7 +208,10 @@ class Client
         return $this->authToken;
     }
 
-    public function getPrograms()
+    /**
+     * @return Program[]|null
+     */
+    public function getPrograms(): ?array
     {
         try {
             $url = $this->getAppUrl() . '/programs/programs';
@@ -256,10 +259,10 @@ class Client
     }
 
     /**
-     * @return array|null
+     * @return PackagingOption[]|null
      * @throws \Exception
      */
-    public function getPackagingOptions()
+    public function getPackagingOptions(): ?array
     {
         try {
             $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/packaging';
@@ -295,9 +298,9 @@ class Client
 
     /**
      * @param OrderRequest $orderRequest
-     * @return null
+     * @return string|null
      */
-    public function createOrderLaterFulfillment(OrderRequest $orderRequest)
+    public function createOrderLaterFulfillment(OrderRequest $orderRequest): ?string
     {
         try {
             $url = $this->getApiUrl() . '/orders';
@@ -357,7 +360,7 @@ class Client
      * @param string $orderUri
      * @return OrderCard[]|null
      */
-    public function getOrderCards(string $orderUri): array
+    public function getOrderCards(string $orderUri): ?array
     {
         try {
             $uri = $this->getApiUrl(). '/orders/' . $orderUri . '/cards';
@@ -388,9 +391,9 @@ class Client
     }
 
     /**
-     * @return array|null
+     * @return OrderStatus[]|null
      */
-    public function getAllOrderFulfillmentStatuses()
+    public function getAllOrderFulfillmentStatuses(): ?array
     {
         try {
             $url = $this->getApiUrl() . '/fulfillment';
@@ -425,7 +428,7 @@ class Client
      * @param OrderRequest $orderRequest
      * @return OrderResponse|null
      */
-    public function createImmediateOrder(OrderRequest $orderRequest)
+    public function createImmediateOrder(OrderRequest $orderRequest): ?OrderResponse
     {
         try {
             $url = $this->getApiUrl() . '/orders/Immediate';
@@ -458,7 +461,7 @@ class Client
      * @return array
      * @throws \Exception
      */
-    private function getProductsByCatalogCollection(array $catalogs = [])
+    private function getProductsByCatalogCollection(array $catalogs = []): array
     {
         if (empty($this->productCollection)) {
             foreach ($catalogs as $catalog) {
@@ -616,7 +619,8 @@ class Client
     private function buildErrorsArray($arr)
     {
         if (!is_array($arr)) {
-            $this->errors[] = $arr;
+            //sometimes comes back NULL
+            $this->errors[] = $arr ?? 'No error message available.';
             return;
         }
         foreach ($arr as $k => $v) {

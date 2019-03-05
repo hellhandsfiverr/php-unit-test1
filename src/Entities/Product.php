@@ -29,12 +29,12 @@ class Product extends AbstractEntity
     protected $isDigital;
 
     /**
-     * @var int
+     * @var float
      */
     protected $maxAmount;
 
     /**
-     * @var int
+     * @var float
      */
     protected $minAmount;
 
@@ -149,33 +149,33 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getMaxAmount(): int
+    public function getMaxAmount(): float
     {
         return $this->maxAmount;
     }
 
     /**
-     * @param int $maxAmount
+     * @param float $maxAmount
      */
-    public function setMaxAmount(int $maxAmount): void
+    public function setMaxAmount(float $maxAmount)
     {
         $this->maxAmount = $maxAmount;
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getMinAmount(): int
+    public function getMinAmount(): float
     {
         return $this->minAmount;
     }
 
     /**
-     * @param int $minAmount
+     * @param float $minAmount
      */
-    public function setMinAmount(int $minAmount): void
+    public function setMinAmount(float $minAmount)
     {
         $this->minAmount = $minAmount;
     }

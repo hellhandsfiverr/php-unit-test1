@@ -10,11 +10,11 @@ $client = new \AllDigitalRewards\Vendor\Fitbit\Client;
 $client->setClientId('DR30266');
 $client->setClientSecret('8dcFRMKv3I3dILXRu8wKH1Wc6FTNHpUZXcEWK3TzemM');
 
-$order = $client->generateAuthToken();
-if($order === null) {
+$token = $client->generateAuthToken();
+if($token === null || $token === false) {
     print_r($client->getErrors());
     exit;
 }
 
-print_r($order);
+var_dump($token);
 

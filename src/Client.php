@@ -2,15 +2,8 @@
 
 namespace AllDigitalRewards\Vendor\Fitbit;
 
-use AllDigitalRewards\Vendor\Fitbit\Entities\AuthTokenRequest;
-use AllDigitalRewards\Vendor\Fitbit\Entities\OrderCard;
 use AllDigitalRewards\Vendor\Fitbit\Entities\OrderRequest;
 use AllDigitalRewards\Vendor\Fitbit\Entities\OrderResponse;
-use AllDigitalRewards\Vendor\Fitbit\Entities\OrderStatus;
-use AllDigitalRewards\Vendor\Fitbit\Entities\PackagingOption;
-use AllDigitalRewards\Vendor\Fitbit\Entities\Product;
-use AllDigitalRewards\Vendor\Fitbit\Entities\Catalog;
-use AllDigitalRewards\Vendor\Fitbit\Entities\Program;
 use GuzzleHttp\Exception\RequestException;
 
 class Client
@@ -18,7 +11,11 @@ class Client
     /**
      * @var string
      */
-    private $apiUrl = 'https://fitbit.com';
+    private $apiUrl = 'http://www.fitbit.com';
+    /**
+     * @var string
+     */
+    private $basePath = 'http://www.fitbit.com/cart/v2/dropship';
     /**
      * @var string
      */
@@ -35,10 +32,6 @@ class Client
      * @var string|null
      */
     private $authToken;
-    /**
-     * @var array
-     */
-    private $productCollection = [];
     /**
      * @var array
      */
@@ -65,6 +58,22 @@ class Client
     public function setApiUrl(string $apiUrl): void
     {
         $this->apiUrl = $apiUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath(): string
+    {
+        return $this->basePath;
+    }
+
+    /**
+     * @param string $basePath
+     */
+    public function setBasePath(string $basePath)
+    {
+        $this->basePath = $basePath;
     }
 
     /**
@@ -116,15 +125,6 @@ class Client
         $this->httpClient = $httpClient;
     }
 
-    private function getAuthTokenRequest(): AuthTokenRequest
-    {
-        $authRequest = new AuthTokenRequest;
-        $authRequest->setClientId($this->getClientId());
-        $authRequest->setClientSecret($this->getClientSecret());
-
-        return $authRequest;
-    }
-
     /**
      * @return bool
      * @throws \Exception
@@ -132,23 +132,46 @@ class Client
     public function generateAuthToken(): bool
     {
         $url = $this->getApiUrl() . '/cart/oauth/token';
-        $response = $this->getHttpClient()->post($url, [
-            'debug' => false,
-            'form_params' => $this->getAuthTokenRequest()->toArray(),
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ]
-        ]);
-        $response = $response->getBody()->getContents();
 
-        $decodedResponse = json_decode($response, true);
-        if (is_array($decodedResponse) === false) {
-            throw new \Exception('Unable to decode API auth token endpoint');
+        try {
+            $response = $this->getHttpClient()->post($url, [
+                'debug' => false,
+                'headers' => $this->getAuthHeaders()
+            ]);
+            $response = $response->getBody()->getContents();
+            $decodedResponse = json_decode($response, true);
+
+            if (is_array($decodedResponse) === false) {
+                throw new \Exception('Unable to decode API auth token endpoint');
+            }
+
+            $this->authToken = $decodedResponse['access_token'];
+            return true;
+        } catch (\Exception $exception) {
+            $this->errors[] = $exception->getMessage();
+            return false;
         }
 
-        var_dump($decodedResponse);die;
-        $this->authToken = $decodedResponse['access_token'];
-        return true;
+    }
+
+    /**
+     * @return array
+     */
+    private function getAuthHeaders(): array
+    {
+        return [
+            'Authorization' => "Basic {$this->getCredentials()}",
+            'cache-control' => 'no-cache',
+            'content-type' => 'application/x-www-form-urlencoded'
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    private function getCredentials(): string
+    {
+        return base64_encode("{$this->getClientId()}:{$this->getClientSecret()}");
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 require __DIR__ . "/../vendor/autoload.php";
 
-$client = new \AllDigitalRewards\Vendor\InComm\Client();
+$client = new \AllDigitalRewards\Vendor\Fitbit\Client();
 $client->setClientId('alldigitalrewardstest');
 $client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
 $client->setProgramId(5870);
 
-$orderProduct = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
+$orderProduct = new \AllDigitalRewards\Vendor\Fitbit\Entities\OrderProduct(
     [
         "Sku" => "VUSD-D-V-00",
         "Value" => 25,
@@ -14,7 +14,7 @@ $orderProduct = new \AllDigitalRewards\Vendor\InComm\Entities\OrderProduct(
     ]
 );
 
-$recipient = new \AllDigitalRewards\Vendor\InComm\Entities\Recipient(
+$recipient = new \AllDigitalRewards\Vendor\Fitbit\Entities\Recipient(
     [
         "FirstName" => "Joseph",
         "LastName" => "Muto",
@@ -28,7 +28,7 @@ $recipient = new \AllDigitalRewards\Vendor\InComm\Entities\Recipient(
     ]
 );
 $recipient->setProducts([$orderProduct]);
-$orderRequest = new \AllDigitalRewards\Vendor\InComm\Entities\OrderRequest(
+$orderRequest = new \AllDigitalRewards\Vendor\Fitbit\Entities\OrderRequest(
     [
         "CatalogId" => 1,
         "CustomerOrderId" => "Customer11-22"

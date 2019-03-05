@@ -1,16 +1,16 @@
 <?php
 
-namespace AllDigitalRewards\Vendor\InComm;
+namespace AllDigitalRewards\Vendor\Fitbit;
 
-use AllDigitalRewards\Vendor\InComm\Entities\AuthTokenRequest;
-use AllDigitalRewards\Vendor\InComm\Entities\OrderCard;
-use AllDigitalRewards\Vendor\InComm\Entities\OrderRequest;
-use AllDigitalRewards\Vendor\InComm\Entities\OrderResponse;
-use AllDigitalRewards\Vendor\InComm\Entities\OrderStatus;
-use AllDigitalRewards\Vendor\InComm\Entities\PackagingOption;
-use AllDigitalRewards\Vendor\InComm\Entities\Product;
-use AllDigitalRewards\Vendor\InComm\Entities\Catalog;
-use AllDigitalRewards\Vendor\InComm\Entities\Program;
+use AllDigitalRewards\Vendor\Fitbit\Entities\AuthTokenRequest;
+use AllDigitalRewards\Vendor\Fitbit\Entities\OrderCard;
+use AllDigitalRewards\Vendor\Fitbit\Entities\OrderRequest;
+use AllDigitalRewards\Vendor\Fitbit\Entities\OrderResponse;
+use AllDigitalRewards\Vendor\Fitbit\Entities\OrderStatus;
+use AllDigitalRewards\Vendor\Fitbit\Entities\PackagingOption;
+use AllDigitalRewards\Vendor\Fitbit\Entities\Product;
+use AllDigitalRewards\Vendor\Fitbit\Entities\Catalog;
+use AllDigitalRewards\Vendor\Fitbit\Entities\Program;
 use GuzzleHttp\Exception\RequestException;
 
 class Client

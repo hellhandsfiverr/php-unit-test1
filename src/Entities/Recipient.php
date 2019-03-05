@@ -1,6 +1,6 @@
 <?php
 
-namespace AllDigitalRewards\Vendor\InComm\Entities;
+namespace AllDigitalRewards\Vendor\Fitbit\Entities;
 
 class Recipient extends AbstractEntity
 {

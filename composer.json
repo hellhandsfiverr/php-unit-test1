@@ -1,10 +1,10 @@
 {
-    "name": "alldigitalrewards/incomm-sdk",
+    "name": "alldigitalrewards/fitbit-sdk",
     "type": "library",
-    "description": "InComm Vendor SDK",
+    "description": "Fitbit Vendor SDK",
     "autoload": {
         "psr-4": {
-            "AllDigitalRewards\\Vendor\\InComm\\": "./src"
+            "AllDigitalRewards\\Vendor\\Fitbit\\": "./src"
         }
     },
     "autoload-dev": {

@@ -1,14 +1,16 @@
 <?php
 require __DIR__ . "/../vendor/autoload.php";
 
-$client = new \AllDigitalRewards\Vendor\Fitbit\Client();
-$client->setClientId('alldigitalrewardstest');
-$client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
-$client->setProgramId(5870);
+/*
+ * Client ID: DR30266
+API Auth Secret: 8dcFRMKv3I3dILXRu8wKH1Wc6FTNHpUZXcEWK3TzemM
+Notifications Auth Secret: ktpfiYRyxu1qK535Fr3xA88x8NhcIFpF7qKBDUka2HM
+ */
+$client = new \AllDigitalRewards\Vendor\Fitbit\Client;
+$client->setClientId('DR30266');
+$client->setClientSecret('8dcFRMKv3I3dILXRu8wKH1Wc6FTNHpUZXcEWK3TzemM');
 
-$uri = 'https://api.giftango.com/orders/0G6-W6-WGK';
-
-$order = $client->getOrder($uri);
+$order = $client->generateAuthToken();
 if($order === null) {
     print_r($client->getErrors());
     exit;

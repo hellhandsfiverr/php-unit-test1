@@ -18,40 +18,27 @@ class Client
     /**
      * @var string
      */
-    private $apiUrl = 'https://api.giftango.com';
-
-    private $appUrl = 'https://app.giftango.com';
-
+    private $apiUrl = 'https://fitbit.com';
     /**
      * @var string
      */
     private $clientId;
-
     /**
      * @var string
      */
     private $clientSecret;
-
-    /**
-     * @var int
-     */
-    private $programId;
-
     /**
      * @var \GuzzleHttp\Client
      */
     private $httpClient;
-
     /**
      * @var string|null
      */
     private $authToken;
-
     /**
      * @var array
      */
     private $productCollection = [];
-
     /**
      * @var array
      */
@@ -78,22 +65,6 @@ class Client
     public function setApiUrl(string $apiUrl): void
     {
         $this->apiUrl = $apiUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAppUrl(): string
-    {
-        return $this->appUrl;
-    }
-
-    /**
-     * @param string $appUrl
-     */
-    public function setAppUrl(string $appUrl): void
-    {
-        $this->appUrl = $appUrl;
     }
 
     /**
@@ -128,22 +99,6 @@ class Client
         $this->clientSecret = $clientSecret;
     }
 
-    /**
-     * @return int
-     */
-    public function getProgramId(): int
-    {
-        return $this->programId;
-    }
-
-    /**
-     * @param int $programId
-     */
-    public function setProgramId(int $programId): void
-    {
-        $this->programId = $programId;
-    }
-
     private function getHttpClient(): \GuzzleHttp\Client
     {
         if ($this->httpClient === null) {
@@ -174,9 +129,9 @@ class Client
      * @return bool
      * @throws \Exception
      */
-    private function generateAuthToken(): bool
+    public function generateAuthToken(): bool
     {
-        $url = $this->getApiUrl() . '/auth/token';
+        $url = $this->getApiUrl() . '/cart/oauth/token';
         $response = $this->getHttpClient()->post($url, [
             'debug' => false,
             'form_params' => $this->getAuthTokenRequest()->toArray(),
@@ -191,6 +146,7 @@ class Client
             throw new \Exception('Unable to decode API auth token endpoint');
         }
 
+        var_dump($decodedResponse);die;
         $this->authToken = $decodedResponse['access_token'];
         return true;
     }
@@ -209,98 +165,10 @@ class Client
     }
 
     /**
-     * @return Program[]|null
-     */
-    public function getPrograms(): ?array
-    {
-        try {
-            $url = $this->getAppUrl() . '/programs/programs';
-
-            $response = $this->getHttpClient()->get($url, [
-                'debug' => false,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                ],
-            ]);
-            if ($response->getStatusCode() === 200) {
-                $programs = json_decode($response->getBody(), true);
-                $collection = [];
-                foreach ($programs as $program) {
-                    $collection[] = new Program($program);
-                }
-                return $collection;
-            }
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return Product[]|null
-     */
-    public function getProducts(): ?array
-    {
-        try {
-            $catalogs = $this->getCatalogs();
-            $products = $this->getProductsByCatalogCollection($catalogs);
-            return $products;
-        } catch (RequestException $e) {
-            $this->setRequestExceptionError($e);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return PackagingOption[]|null
-     * @throws \Exception
-     */
-    public function getPackagingOptions(): ?array
-    {
-        try {
-            $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/packaging';
-
-            $response = $this->getHttpClient()->get($url, [
-                'debug' => false,
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->getAuthToken()
-                ]
-            ]);
-
-            $response = $response->getBody()->getContents();
-            $decodedResponse = json_decode($response, true);
-
-            if (is_array($decodedResponse) === false) {
-                throw new \Exception('Unable to decode API packaging endpoint');
-            }
-
-            $packagingCollection = [];
-            foreach ($decodedResponse as $option) {
-                $packagingCollection[] = new PackagingOption($option);
-            }
-
-            return $packagingCollection;
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-
-        return null;
-    }
-
-    /**
      * @param OrderRequest $orderRequest
      * @return string|null
      */
-    public function createOrderLaterFulfillment(OrderRequest $orderRequest): ?string
+    public function createOrder(OrderRequest $orderRequest): ?string
     {
         try {
             $url = $this->getApiUrl() . '/orders';
@@ -310,7 +178,6 @@ class Client
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                    'ProgramId' => $this->getProgramId(),
                 ],
                 'body' => json_encode($orderRequest->toArray())
             ]);
@@ -339,7 +206,6 @@ class Client
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                    'ProgramId' => $this->getProgramId(),
                 ],
             ]);
 
@@ -354,253 +220,6 @@ class Client
         }
 
         return null;
-    }
-
-    /**
-     * @param string $orderUri
-     * @return OrderCard[]|null
-     */
-    public function getOrderCards(string $orderUri): ?array
-    {
-        try {
-            $uri = $this->getApiUrl(). '/orders/' . $orderUri . '/cards';
-            $response = $this->getHttpClient()->get($uri, [
-                'debug' => false,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                    'ProgramId' => $this->getProgramId(),
-                ],
-            ]);
-
-            if ($response->getStatusCode() === 200) {
-                $orderCards = json_decode($response->getBody(), true);
-                $collection = [];
-                foreach ($orderCards as $orderCard) {
-                    $collection[] = new OrderCard($orderCard);
-                }
-                return $collection;
-            }
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return OrderStatus[]|null
-     */
-    public function getAllOrderFulfillmentStatuses(): ?array
-    {
-        try {
-            $url = $this->getApiUrl() . '/fulfillment';
-
-            $response = $this->getHttpClient()->get($url, [
-                'debug' => false,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                    'ProgramId' => $this->getProgramId(),
-                ],
-            ]);
-
-            if ($response->getStatusCode() === 200) {
-                $statuses = json_decode($response->getBody(), true);
-                $collection = [];
-                foreach ($statuses as $status) {
-                    $collection[] = new OrderStatus($status);
-                }
-                return $collection;
-            }
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param OrderRequest $orderRequest
-     * @return OrderResponse|null
-     */
-    public function createImmediateOrder(OrderRequest $orderRequest): ?OrderResponse
-    {
-        try {
-            $url = $this->getApiUrl() . '/orders/Immediate';
-
-            $response = $this->getHttpClient()->post($url, [
-                'debug' => false,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                    'ProgramId' => $this->getProgramId(),
-                ],
-                'body' => json_encode($orderRequest->toArray())
-            ]);
-
-            if ($response->getStatusCode() === 201) {
-                $order = json_decode($response->getBody(), true);
-                return new OrderResponse($order);
-            }
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param array $catalogs
-     * @return array
-     * @throws \Exception
-     */
-    private function getProductsByCatalogCollection(array $catalogs = []): array
-    {
-        if (empty($this->productCollection)) {
-            foreach ($catalogs as $catalog) {
-                    $this->hydrateCatalogProducts($catalog->getId());
-                    $this->getCatalogAssets($catalog->getId());
-            }
-        }
-
-        return $this->productCollection;
-    }
-
-    /**
-     * @param int $catalogId
-     * @throws \Exception
-     */
-    private function hydrateCatalogProducts(int $catalogId)
-    {
-        $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs/' . $catalogId;
-        $response = $this->getHttpClient()->get($url, [
-            'debug' => false,
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->getAuthToken()
-            ]
-        ]);
-        $response = $response->getBody()->getContents();
-
-        $decodedResponse = json_decode($response, true);
-        if (is_array($decodedResponse) === false) {
-            throw new \Exception('Unable to decode API catalog product endpoint');
-        }
-
-        foreach ($decodedResponse['products'] as $product) {
-            $sku = $product['productSku'];
-            $createProd = new Product($product);
-            $createProd->setCatalogId($catalogId);
-            $this->productCollection[$sku] = $createProd;
-        }
-    }
-
-
-    /**
-     * @param int $catalogId
-     * @return array
-     * @throws \Exception
-     */
-    private function getCatalogAssets(int $catalogId)
-    {
-        $url = $this->getAppUrl()
-            . '/programs/programs/'
-            . $this->getProgramId()
-            . '/catalogs/'
-            . $catalogId
-            . '/assets';
-
-        $response = $this->getHttpClient()->get($url, [
-            'debug' => false,
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->getAuthToken()
-            ]
-        ]);
-        $response = $response->getBody()->getContents();
-
-        $decodedResponse = json_decode($response, true);
-        if (is_array($decodedResponse) === false) {
-            throw new \Exception('Unable to decode API catalog asset endpoint');
-        }
-
-        $productAssets = null;
-        foreach ($decodedResponse as $assetLocalization) {
-            if ($assetLocalization['languageCulture'] === 'en-US') {
-                $productAssets = $assetLocalization['products'];
-            }
-        }
-
-        $this->hydrateCatalogAssets($productAssets);
-    }
-
-    /**
-     * @param $assets
-     * @throws \Exception
-     */
-    private function hydrateCatalogAssets($assets)
-    {
-        foreach ($assets as $product) {
-            $sku = $product['productSku'];
-            /** @var Product $oProduct */
-            $oProduct = $this->productCollection[$sku];
-            foreach ($product['assets'] as $asset) {
-                switch ($asset['type']) {
-                    case 'cardholderagreement':
-                        $oProduct->setTermAttachment($asset['href']);
-                        break;
-                    case 'legaldisclaimer':
-                        $oProduct->setDisclosure($asset['text']);
-                        break;
-                    case 'termsconditions':
-                        $oProduct->setTerms($asset['text']);
-                        break;
-                    case 'marketingdescription':
-                        //Overrides the description that is set from the product catalog
-                        $oProduct->setDescription($asset['text']);
-                        break;
-                    case 'cardimage':
-                        $oProduct->setImage($asset['href']);
-                        break;
-                    case 'redemptioninstructions':
-                        continue;
-                    default:
-                        throw new \Exception('Unknown asset type iterated: ' . $asset['type']);
-                }
-            }
-        }
-    }
-
-    /**
-     * @return array
-     * @throws \Exception
-     */
-    private function getCatalogs()
-    {
-        $url = $this->getAppUrl() . '/programs/programs/' . $this->getProgramId() . '/catalogs';
-        $response = $this->getHttpClient()->get($url, [
-            'debug' => false,
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->getAuthToken()
-            ]
-        ]);
-        $response = $response->getBody()->getContents();
-        $decodedResponse = json_decode($response, true);
-        if (is_array($decodedResponse) === false) {
-            throw new \Exception('Unable to decode API catalog endpoint');
-        }
-
-        $catalogCollection = [];
-        foreach ($decodedResponse as $catalog) {
-            $catalogCollection[] = new Catalog($catalog);
-        }
-
-        return $catalogCollection;
     }
 
     public function getErrors(): array

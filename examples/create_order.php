@@ -2,38 +2,41 @@
 require __DIR__ . "/../vendor/autoload.php";
 
 $client = new \AllDigitalRewards\Vendor\Fitbit\Client();
-$client->setClientId('alldigitalrewardstest');
-$client->setClientSecret('R]+uJ2meoN(bhL/mfV&To?f|8nEWz+cG');
+$client->setClientId('DR30266');
+$client->setClientSecret('8dcFRMKv3I3dILXRu8wKH1Wc6FTNHpUZXcEWK3TzemM');
 
 $orderProduct = new \AllDigitalRewards\Vendor\Fitbit\Entities\OrderProduct(
     [
-        "Sku" => "VUSD-D-V-00",
-        "Value" => 25,
-        "Quantity" => 1
+        "skuCode" => "412BKBK",
+        "quantity" => 1
     ]
 );
 
 $recipient = new \AllDigitalRewards\Vendor\Fitbit\Entities\Recipient(
     [
-        "FirstName" => "Joseph",
-        "LastName" => "Muto",
-        "EmailAddress" => "jmuto@alldigitalrewards.com",
-        "Address1" => "935 Bungalow Ave",
-        "Address2" => "",
-        "City" => "Winter Park",
-        "StateProvinceCode" => "FL",
-        "PostalCode" => "32789",
-        "CountryCode" => "US"
+        "name" => "Joseph Muto",
+        "email" => "jmuto@alldigitalrewards.com",
+        "phone" => "407-458-3861",
+        "address1" => "935 Bungalow Ave",
+        "address2" => "",
+        "city" => "Winter Park",
+        "state" => "FL",
+        "postal" => "32789",
+        "country" => "US"
     ]
 );
-$recipient->setProducts([$orderProduct]);
+
 $orderRequest = new \AllDigitalRewards\Vendor\Fitbit\Entities\OrderRequest(
     [
-        "CatalogId" => 1,
-        "CustomerOrderId" => "Customer11-22"
+        "orderId" => "Customer11-22",
+        "promoCode" => "DROPSHIP",
+        "logoUrl" => "https://www.partner.com/logo.png",
+        "companyName" => "partner name",
+        "sendShipmentConfimation" => true,
     ]
 );
-$orderRequest->setRecipients([$recipient]);
+$orderRequest->setLineItems([$orderProduct]);
+$orderRequest->setShippingAddress($recipient);
 
 $response = $client->createOrder($orderRequest);
 if ($response === null) {

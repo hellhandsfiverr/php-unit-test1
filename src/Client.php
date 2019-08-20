@@ -4,7 +4,6 @@ namespace AllDigitalRewards\Vendor\Fitbit;
 
 use AllDigitalRewards\Vendor\Fitbit\Entities\OrderRequest;
 use AllDigitalRewards\Vendor\Fitbit\Entities\OrderResponse;
-use GuzzleHttp\Exception\RequestException;
 
 class Client
 {
@@ -36,6 +35,10 @@ class Client
      * @var array
      */
     private $errors = [];
+    /**
+     * @var int
+     */
+    private $statusCode;
 
     /**
      * Client constructor.
@@ -127,7 +130,6 @@ class Client
 
     /**
      * @return bool
-     * @throws \Exception
      */
     public function generateAuthToken(): bool
     {
@@ -142,7 +144,8 @@ class Client
             $decodedResponse = json_decode($response, true);
 
             if (is_array($decodedResponse) === false) {
-                throw new \Exception('Unable to decode API auth token endpoint');
+                $this->errors[] = 'Unable to decode API auth token endpoint';
+                return false;
             }
 
             $this->authToken = $decodedResponse['access_token'];
@@ -151,7 +154,6 @@ class Client
             $this->errors[] = $exception->getMessage();
             return false;
         }
-
     }
 
     /**
@@ -193,56 +195,47 @@ class Client
      */
     public function createOrder(OrderRequest $orderRequest): ?string
     {
-        try {
-            $url = $this->getApiUrl() . '/orders';
+        $url = $this->getApiUrl() . '/orders';
 
-            $response = $this->getHttpClient()->post($url, [
-                'debug' => false,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                ],
-                'body' => json_encode($orderRequest->toArray())
-            ]);
-
-            if ($response->getStatusCode() === 202) {
-                return $response->getHeader('Location')[0];
-            }
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
+        $response = $this->sendRequest('POST', $url, $orderRequest);
+        if ($this->statusCode === 200) {
+            return $response->getHeader('Location')[0];
         }
 
         return null;
     }
 
     /**
-     * @param string $uri
+     * @param string $confirmationNumber
      * @return OrderResponse|null
      */
-    public function getOrder(string $uri)
+    public function getOrder(string $confirmationNumber)
     {
-        try {
-            $response = $this->getHttpClient()->get($uri, [
-                'debug' => false,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getAuthToken(),
-                ],
-            ]);
+        $url = $this->getApiUrl() . '/orders/' . $confirmationNumber;
 
-            if ($response->getStatusCode() === 200) {
-                $order = json_decode($response->getBody(), true);
-                return new OrderResponse($order);
-            }
-        } catch (RequestException $exception) {
-            $this->setRequestExceptionError($exception);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
+        $response = $this->sendRequest('GET', $url);
+        if ($this->statusCode === 200) {
+            $jsonObj = json_decode($response->getBody(), true);
+            return new OrderResponse($jsonObj);
         }
 
         return null;
+    }
+
+    /**
+     * @param string $confirmationNumber
+     * @return bool
+     */
+    public function cancelOrder(string $confirmationNumber): bool
+    {
+        $url = $this->getApiUrl() . '/orders/' . $confirmationNumber;
+
+        $response = $this->sendRequest('DELETE', $url);
+        if ($this->statusCode === 200) {
+            return true;
+        }
+
+        return false;
     }
 
     public function getErrors(): array
@@ -251,13 +244,43 @@ class Client
     }
 
     /**
-     * @param RequestException $e
+     * @param $type
+     * @param $url
+     * @param null $body
+     * @return mixed|null
      */
-    private function setRequestExceptionError(RequestException $e)
+    private function sendRequest($type, $url, $body = null)
     {
-        $response = $e->getResponse()->getBody()->getContents();
-        $errors = json_decode($response, true);
-        $this->buildErrorsArray($errors);
+        try {
+            if (($authToken = $this->getAuthToken()) === null) {
+                $this->statusCode = 500;
+                return null;
+            }
+
+            $response = $this->getHttpClient()->request(
+                $type,
+                $url,
+                [
+                    'headers' => [
+                        'Authorization' => $authToken,
+                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json'
+                    ],
+                    'body' => json_encode($body)
+                ]
+            );
+
+            $this->statusCode = $response->getStatusCode();
+            if ($this->statusCode >= 200 && $this->statusCode <= 299) {
+                return $response;
+            }
+
+            $jsonObj = json_decode($response->getBody(), true);
+            $this->buildErrorsArray($jsonObj);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
+        }
+        return null;
     }
 
     private function buildErrorsArray($arr)

@@ -5,75 +5,198 @@ namespace AllDigitalRewards\Vendor\Fitbit\Entities;
 class OrderRequest extends AbstractEntity
 {
     /**
-     * @var int
+     * @var string
      */
-    protected $CatalogId;
+    protected $orderId;
+    /**
+     * @var OrderProduct[]
+     */
+    protected $lineItems;
     /**
      * @var string
      */
-    protected $CustomerOrderId;
+    protected $promoCode;
     /**
-     * @var Recipient[]
+     * @var string
      */
-    protected $Recipients;
+    protected $logoUrl;
+    /**
+     * @var string
+     */
+    protected $companyName;
+    /**
+     * @var bool
+     */
+    protected $sendOrderConfirmation = false;
+    /**
+     * @var bool
+     */
+    protected $sendShipmentConfimation = true;
+    /**
+     * @var bool
+     */
+    protected $showPricingInEmails = false;
+    /**
+     * @var Recipient
+     */
+    protected $shippingAddress;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getCatalogId(): int
+    public function getOrderId(): string
     {
-        return $this->CatalogId;
+        return $this->orderId;
     }
 
     /**
-     * @param int $CatalogId
+     * @param string $orderId
      */
-    public function setCatalogId(int $CatalogId)
+    public function setOrderId(string $orderId): void
     {
-        $this->CatalogId = $CatalogId;
+        $this->orderId = $orderId;
+    }
+
+    /**
+     * @return OrderProduct[]
+     */
+    public function getLineItems(): array
+    {
+        return $this->lineItems;
+    }
+
+    /**
+     * @param OrderProduct[] $lineItems
+     */
+    public function setLineItems(array $lineItems): void
+    {
+        $this->lineItems = $lineItems;
     }
 
     /**
      * @return string
      */
-    public function getCustomerOrderId(): string
+    public function getPromoCode(): string
     {
-        return $this->CustomerOrderId;
+        return $this->promoCode;
     }
 
     /**
-     * @param string $CustomerOrderId
+     * @param string $promoCode
      */
-    public function setCustomerOrderId(string $CustomerOrderId)
+    public function setPromoCode(string $promoCode): void
     {
-        $this->CustomerOrderId = $CustomerOrderId;
+        $this->promoCode = $promoCode;
     }
 
     /**
-     * @return Recipient[]
+     * @return string
      */
-    public function getRecipients(): array
+    public function getLogoUrl(): string
     {
-        return $this->Recipients;
+        return $this->logoUrl;
     }
 
     /**
-     * @param Recipient[] $Recipients
+     * @param string $logoUrl
      */
-    public function setRecipients(array $Recipients)
+    public function setLogoUrl(string $logoUrl): void
     {
-        $this->Recipients = $Recipients;
+        $this->logoUrl = $logoUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompanyName(): string
+    {
+        return $this->companyName;
+    }
+
+    /**
+     * @param string $companyName
+     */
+    public function setCompanyName(string $companyName): void
+    {
+        $this->companyName = $companyName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSendOrderConfirmation(): bool
+    {
+        return $this->sendOrderConfirmation;
+    }
+
+    /**
+     * @param bool $sendOrderConfirmation
+     */
+    public function setSendOrderConfirmation(bool $sendOrderConfirmation): void
+    {
+        $this->sendOrderConfirmation = $sendOrderConfirmation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSendShipmentConfimation(): bool
+    {
+        return $this->sendShipmentConfimation;
+    }
+
+    /**
+     * @param bool $sendShipmentConfimation
+     */
+    public function setSendShipmentConfimation(bool $sendShipmentConfimation): void
+    {
+        $this->sendShipmentConfimation = $sendShipmentConfimation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowPricingInEmails(): bool
+    {
+        return $this->showPricingInEmails;
+    }
+
+    /**
+     * @param bool $showPricingInEmails
+     */
+    public function setShowPricingInEmails(bool $showPricingInEmails): void
+    {
+        $this->showPricingInEmails = $showPricingInEmails;
+    }
+
+    /**
+     * @return Recipient
+     */
+    public function getShippingAddress(): Recipient
+    {
+        return $this->shippingAddress;
+    }
+
+    /**
+     * @param Recipient $shippingAddress
+     */
+    public function setShippingAddress(Recipient $shippingAddress): void
+    {
+        $this->shippingAddress = $shippingAddress;
     }
 
     public function toArray(): array
     {
         $data = parent::toArray();
-        if ($data['Recipients']) {
-            $recipients = [];
-            foreach ($data['Recipients'] as $recipient) {
-                $recipients[] = $recipient->toArray();
+        if ($data['lineItems']) {
+            $products = [];
+            foreach ($data['lineItems'] as $orderProduct) {
+                $products[] = $orderProduct->toArray();
             }
-            $data['Recipients'] = $recipients;
+            $data['lineItems'] = $products;
+        }
+        if ($data['shippingAddress']) {
+            $data['shippingAddress'] = $data['shippingAddress']->toArray();
         }
 
         return $data;

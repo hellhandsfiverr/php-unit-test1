@@ -7,46 +7,26 @@ class OrderProduct extends AbstractEntity
     /**
      * @var string
      */
-    protected $Sku;
-    /**
-     * @var float
-     */
-    protected $Value;
+    protected $skuCode;
     /**
      * @var int
      */
-    protected $Quantity;
+    protected $quantity;
 
     /**
      * @return string
      */
-    public function getSku(): string
+    public function getSkuCode(): string
     {
-        return $this->Sku;
+        return $this->skuCode;
     }
 
     /**
-     * @param string $Sku
+     * @param string $skuCode
      */
-    public function setSku(string $Sku)
+    public function setSkuCode(string $skuCode): void
     {
-        $this->Sku = $Sku;
-    }
-
-    /**
-     * @return float
-     */
-    public function getValue(): float
-    {
-        return $this->Value;
-    }
-
-    /**
-     * @param float $Value
-     */
-    public function setValue(float $Value)
-    {
-        $this->Value = $Value;
+        $this->skuCode = $skuCode;
     }
 
     /**
@@ -54,14 +34,14 @@ class OrderProduct extends AbstractEntity
      */
     public function getQuantity(): int
     {
-        return $this->Quantity;
+        return $this->quantity;
     }
 
     /**
-     * @param int $Quantity
+     * @param int $quantity
      */
-    public function setQuantity(int $Quantity)
+    public function setQuantity(int $quantity): void
     {
-        $this->Quantity = $Quantity;
+        $this->quantity = $quantity;
     }
 }

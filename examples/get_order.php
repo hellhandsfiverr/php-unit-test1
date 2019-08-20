@@ -6,11 +6,9 @@ $client = new \AllDigitalRewards\Vendor\Fitbit\Client();
 $client->setClientId('');
 $client->setClientSecret('');
 
-$token = $client->generateAuthToken();
-if($token === null || $token === false) {
+$response = $client->getOrder('DEV-B4BV4KRLM');
+if($response === null) {
     print_r($client->getErrors());
     exit;
 }
-
-var_dump($token);
 

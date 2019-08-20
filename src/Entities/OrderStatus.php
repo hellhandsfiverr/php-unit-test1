@@ -5,163 +5,143 @@ namespace AllDigitalRewards\Vendor\Fitbit\Entities;
 class OrderStatus extends AbstractEntity
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $FulfillmentStatus;
+    protected $skuStatuses;
     /**
      * @var string
      */
-    protected $OrderUri;
+    protected $orderUrl;
     /**
      * @var string
      */
-    protected $CustomerOrderId;
+    protected $orderConfirmationNumber;
     /**
      * @var string
      */
-    protected $OrderDate;
+    protected $orderStatus;
     /**
-     * @var string
+     * @var mixed
      */
-    protected $FulfilledDate;
+    protected $shippingMethod;
     /**
-     * @var string
+     * @var array
      */
-    protected $Sku;
+    protected $itemsAwaitingShipment;
     /**
-     * @var float
+     * @var array
      */
-    protected $Value;
-    /**
-     * @var int
-     */
-    protected $Quantity;
+    protected $shipments;
 
     /**
-     * @return string
+     * @return array
      */
-    public function getFulfillmentStatus(): string
+    public function getSkuStatuses(): array
     {
-        return $this->FulfillmentStatus;
+        return $this->skuStatuses;
     }
 
     /**
-     * @param string $FulfillmentStatus
+     * @param array $skuStatuses
      */
-    public function setFulfillmentStatus(string $FulfillmentStatus)
+    public function setSkuStatuses(array $skuStatuses): void
     {
-        $this->FulfillmentStatus = $FulfillmentStatus;
+        $this->skuStatuses = $skuStatuses;
     }
 
     /**
      * @return string
      */
-    public function getOrderUri(): string
+    public function getOrderUrl(): string
     {
-        return $this->OrderUri;
+        return $this->orderUrl;
     }
 
     /**
-     * @param string $OrderUri
+     * @param string $orderUrl
      */
-    public function setOrderUri(string $OrderUri)
+    public function setOrderUrl(string $orderUrl): void
     {
-        $this->OrderUri = $OrderUri;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerOrderId(): string
-    {
-        return $this->CustomerOrderId;
-    }
-
-    /**
-     * @param string $CustomerOrderId
-     */
-    public function setCustomerOrderId(string $CustomerOrderId)
-    {
-        $this->CustomerOrderId = $CustomerOrderId;
+        $this->orderUrl = $orderUrl;
     }
 
     /**
      * @return string
      */
-    public function getOrderDate(): string
+    public function getOrderConfirmationNumber(): string
     {
-        return $this->OrderDate;
+        return $this->orderConfirmationNumber;
     }
 
     /**
-     * @param string $OrderDate
+     * @param string $orderConfirmationNumber
      */
-    public function setOrderDate(string $OrderDate)
+    public function setOrderConfirmationNumber(string $orderConfirmationNumber): void
     {
-        $this->OrderDate = $OrderDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFulfilledDate(): string
-    {
-        return $this->FulfilledDate;
-    }
-
-    /**
-     * @param string $FulfilledDate
-     */
-    public function setFulfilledDate(string $FulfilledDate)
-    {
-        $this->FulfilledDate = $FulfilledDate;
+        $this->orderConfirmationNumber = $orderConfirmationNumber;
     }
 
     /**
      * @return string
      */
-    public function getSku(): string
+    public function getOrderStatus(): string
     {
-        return $this->Sku;
+        return $this->orderStatus;
     }
 
     /**
-     * @param string $Sku
+     * @param string $orderStatus
      */
-    public function setSku(string $Sku)
+    public function setOrderStatus(string $orderStatus): void
     {
-        $this->Sku = $Sku;
+        $this->orderStatus = $orderStatus;
     }
 
     /**
-     * @return float
+     * @return mixed
      */
-    public function getValue(): float
+    public function getShippingMethod()
     {
-        return $this->Value;
+        return $this->shippingMethod;
     }
 
     /**
-     * @param float $Value
+     * @param mixed $shippingMethod
      */
-    public function setValue(float $Value)
+    public function setShippingMethod($shippingMethod): void
     {
-        $this->Value = $Value;
+        $this->shippingMethod = $shippingMethod;
     }
 
     /**
-     * @return int
+     * @return array
      */
-    public function getQuantity(): int
+    public function getItemsAwaitingShipment(): array
     {
-        return $this->Quantity;
+        return $this->itemsAwaitingShipment;
     }
 
     /**
-     * @param int $Quantity
+     * @param array $itemsAwaitingShipment
      */
-    public function setQuantity(int $Quantity)
+    public function setItemsAwaitingShipment(array $itemsAwaitingShipment): void
     {
-        $this->Quantity = $Quantity;
+        $this->itemsAwaitingShipment = $itemsAwaitingShipment;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShipments(): array
+    {
+        return $this->shipments;
+    }
+
+    /**
+     * @param array $shipments
+     */
+    public function setShipments(array $shipments): void
+    {
+        $this->shipments = $shipments;
     }
 }

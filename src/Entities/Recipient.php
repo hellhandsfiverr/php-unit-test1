@@ -7,134 +7,86 @@ class Recipient extends AbstractEntity
     /**
      * @var string
      */
-    protected $ShippingMethod = 'Email';
+    protected $name;
     /**
      * @var string
      */
-    protected $LanguageCultureCode = 'en-US';
+    protected $email;
     /**
      * @var string
      */
-    protected $FirstName;
+    protected $phone;
     /**
      * @var string
      */
-    protected $LastName;
+    protected $address1;
     /**
      * @var string
      */
-    protected $EmailAddress;
+    protected $address2 = '';
     /**
      * @var string
      */
-    protected $Address1;
+    protected $postal;
     /**
      * @var string
      */
-    protected $Address2;
+    protected $city;
     /**
      * @var string
      */
-    protected $City;
+    protected $state;
     /**
      * @var string
      */
-    protected $StateProvinceCode;
-    /**
-     * @var string
-     */
-    protected $PostalCode;
-    /**
-     * @var string
-     */
-    protected $CountryCode;
-    /**
-     * @var bool
-     */
-    protected $DeliverEmail = false;
-    /**
-     * @var OrderProduct[]
-     */
-    protected $Products;
+    protected $country = 'US';
 
     /**
      * @return string
      */
-    public function getShippingMethod(): string
+    public function getName(): string
     {
-        return $this->ShippingMethod;
+        return $this->name;
     }
 
     /**
-     * @param string $ShippingMethod
+     * @param string $name
      */
-    public function setShippingMethod(string $ShippingMethod)
+    public function setName(string $name): void
     {
-        $this->ShippingMethod = $ShippingMethod;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getLanguageCultureCode(): string
+    public function getEmail(): string
     {
-        return $this->LanguageCultureCode;
+        return $this->email;
     }
 
     /**
-     * @param string $LanguageCultureCode
+     * @param string $email
      */
-    public function setLanguageCultureCode(string $LanguageCultureCode)
+    public function setEmail(string $email): void
     {
-        $this->LanguageCultureCode = $LanguageCultureCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirstName(): string
-    {
-        return $this->FirstName;
-    }
-
-    /**
-     * @param string $FirstName
-     */
-    public function setFirstName(string $FirstName)
-    {
-        $this->FirstName = $FirstName;
+        $this->email = $email;
     }
 
     /**
      * @return string
      */
-    public function getLastName(): string
+    public function getPhone(): string
     {
-        return $this->LastName;
+        return $this->phone;
     }
 
     /**
-     * @param string $LastName
+     * @param string $phone
      */
-    public function setLastName(string $LastName)
+    public function setPhone(string $phone): void
     {
-        $this->LastName = $LastName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmailAddress(): string
-    {
-        return $this->EmailAddress;
-    }
-
-    /**
-     * @param string $EmailAddress
-     */
-    public function setEmailAddress(string $EmailAddress)
-    {
-        $this->EmailAddress = $EmailAddress;
+        $this->phone = $phone;
     }
 
     /**
@@ -142,15 +94,15 @@ class Recipient extends AbstractEntity
      */
     public function getAddress1(): string
     {
-        return $this->Address1;
+        return $this->address1;
     }
 
     /**
-     * @param string $Address1
+     * @param string $address1
      */
-    public function setAddress1(string $Address1)
+    public function setAddress1(string $address1): void
     {
-        $this->Address1 = $Address1;
+        $this->address1 = $address1;
     }
 
     /**
@@ -158,15 +110,31 @@ class Recipient extends AbstractEntity
      */
     public function getAddress2(): string
     {
-        return $this->Address2;
+        return $this->address2;
     }
 
     /**
-     * @param string $Address2
+     * @param string $address2
      */
-    public function setAddress2(string $Address2)
+    public function setAddress2(string $address2): void
     {
-        $this->Address2 = $Address2;
+        $this->address2 = $address2;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostal(): string
+    {
+        return $this->postal;
+    }
+
+    /**
+     * @param string $postal
+     */
+    public function setPostal(string $postal): void
+    {
+        $this->postal = $postal;
     }
 
     /**
@@ -174,112 +142,46 @@ class Recipient extends AbstractEntity
      */
     public function getCity(): string
     {
-        return $this->City;
+        return $this->city;
     }
 
     /**
-     * @param string $City
+     * @param string $city
      */
-    public function setCity(string $City)
+    public function setCity(string $city): void
     {
-        $this->City = $City;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStateProvinceCode(): string
-    {
-        return $this->StateProvinceCode;
-    }
-
-    /**
-     * @param string $StateProvinceCode
-     */
-    public function setStateProvinceCode(string $StateProvinceCode)
-    {
-        $this->StateProvinceCode = $StateProvinceCode;
+        $this->city = $city;
     }
 
     /**
      * @return string
      */
-    public function getPostalCode(): string
+    public function getState(): string
     {
-        return $this->PostalCode;
+        return $this->state;
     }
 
     /**
-     * @param string $PostalCode
+     * @param string $state
      */
-    public function setPostalCode(string $PostalCode)
+    public function setState(string $state): void
     {
-        $this->PostalCode = $PostalCode;
+        $this->state = $state;
     }
 
     /**
      * @return string
      */
-    public function getCountryCode(): string
+    public function getCountry(): string
     {
-        return $this->CountryCode;
+        return $this->country;
     }
 
     /**
-     * @param string $CountryCode
+     * @param string $country
      */
-    public function setCountryCode(string $CountryCode)
+    public function setCountry(string $country): void
     {
-        if (in_array($CountryCode, [840, 'us', 'US']) === true) {
-            $this->CountryCode = 'US';
-            return;
-        }
-        $this->CountryCode = $CountryCode;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeliverEmail(): bool
-    {
-        return $this->DeliverEmail;
-    }
-
-    /**
-     * @param bool $DeliverEmail
-     */
-    public function setDeliverEmail(bool $DeliverEmail)
-    {
-        $this->DeliverEmail = $DeliverEmail;
-    }
-
-    /**
-     * @return OrderProduct[]
-     */
-    public function getProducts(): array
-    {
-        return $this->Products;
-    }
-
-    /**
-     * @param OrderProduct[] $Products
-     */
-    public function setProducts(array $Products)
-    {
-        $this->Products = $Products;
-    }
-
-    public function toArray(): array
-    {
-        $data = parent::toArray();
-        if ($data['Products']) {
-            $products = [];
-            foreach ($data['Products'] as $product) {
-                $products[] = $product->toArray();
-            }
-            $data['Products'] = $products;
-        }
-
-        return $data;
+        $this->country = $country;
     }
 }

@@ -1,9 +1,10 @@
 <?php
 require __DIR__ . "/../vendor/autoload.php";
 
-$client = new \AllDigitalRewards\Vendor\Fitbit\Client;
-$client->setClientId('DR30266');
-$client->setClientSecret('8dcFRMKv3I3dILXRu8wKH1Wc6FTNHpUZXcEWK3TzemM');
+//Get Creds from Shared Lastpass
+$client = new \AllDigitalRewards\Vendor\Fitbit\Client();
+$client->setClientId('');
+$client->setClientSecret('');
 
 $response = $client->getOrder('DEV-B4BV4KRLM');
 if($response === null) {

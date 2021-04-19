@@ -8,6 +8,6 @@ class ExampleTest extends TestCase
 
     public function testDummy()
     {
-        self::assertTrue(true);
+        self::assertFalse(false);
     }
 }
